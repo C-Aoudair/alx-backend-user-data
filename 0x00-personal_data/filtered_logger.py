@@ -11,15 +11,38 @@ from typing import List
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
 
 
+def main() -> None:
+    """ obtain a database connection using get_db
+        and retrieve all rows in the users table
+        and display each row under a filtered format
+    """
+    db_connector = get_db()
+    cursor = db_connector.cursor()
+    cursor.execute('SELECT * FROM users;')
+
+    logger = get_logger()
+
+    headers = [field[0] for field in cursor.description]
+
+    for row in cursor:
+        message = ""
+        for item in zip(headers, row):
+            message += f"{item[0]}={item[1]}; "
+        logger.info(message)
+
+    cursor.close()
+    db_connector.close()
+
+
 def get_db() -> mysql.connector.connection.MySQLConnection:
     """Returns a connector to the database"""
-    my_db = mysql.connector.connect(
+    db_connect = mysql.connector.connect(
         host=os.getenv('PERSONAL_DATA_DB_HOST', 'localhost'),
         user=os.getenv('PERSONAL_DATA_DB_USERNAME', 'root'),
         password=os.getenv('PERSONAL_DATA_DB_PASSWORD', ''),
         database=os.getenv('PERSONAL_DATA_DB_NAME')
     )
-    return my_db
+    return db_connect
 
 
 def get_logger() -> logging.Logger:
@@ -68,3 +91,7 @@ class RedactingFormatter(logging.Formatter):
             self.fields, self.REDACTION, log_message, self.SEPARATOR
         )
         return obfuscated_message
+
+
+if __name__ == '__main__':
+    main()
