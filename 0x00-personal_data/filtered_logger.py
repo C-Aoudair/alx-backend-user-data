@@ -21,13 +21,12 @@ def main() -> None:
     cursor.execute('SELECT * FROM users;')
 
     logger = get_logger()
-
     headers = [field[0] for field in cursor.description]
 
-    for row in cursor:
+    for row in cursor.fetchall():
         message = ""
-        for item in zip(headers, row):
-            message += f"{item[0]}={item[1]}; "
+        for header, value in zip(headers, row):
+            message += f"{header}={value}; "
         logger.info(message)
 
     cursor.close()
