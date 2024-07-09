@@ -27,4 +27,3 @@ class Auth:
         For now, this method returns None.
         """
         return None
-
