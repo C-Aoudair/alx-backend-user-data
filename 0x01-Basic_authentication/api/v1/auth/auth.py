@@ -10,7 +10,7 @@ class Auth:
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """
         Determines if authentication is required for a certain path.
-        """
+       """
         if not path or not excluded_paths:
             return True
 
@@ -20,9 +20,12 @@ class Auth:
     def authorization_header(self, request=None) -> str:
         """
         Returns the value of the Authorization header from the request.
-        For now, this method returns None.
         """
-        return None
+        if not request:
+            return None
+
+        return request.headers.get("Authorization")
+
 
     def current_user(self, request=None) -> TypeVar('User'):
         """
