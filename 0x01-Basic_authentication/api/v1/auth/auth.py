@@ -14,6 +14,11 @@ class Auth:
         if not path or not excluded_paths:
             return True
 
+        for excluded_path in excluded_paths:
+            if (excluded_path.endswith('*')
+                    and path.startswith(excluded_path[:-1])):
+                return False
+
         normalized_path = path if path.endswith('/') else f"{path}/"
         return normalized_path not in excluded_paths
 
