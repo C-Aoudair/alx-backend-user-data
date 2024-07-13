@@ -16,9 +16,17 @@ auth = None
 auth_type = getenv("AUTH_TYPE")
 
 if auth_type:
-    from api.v1.auth.auth import Auth
-    from api.v1.auth.basic_auth import BasicAuth
-    auth = BasicAuth() if auth_type == "basic_auth" else Auth()
+    if auth_type == "auth":
+        from api.v1.auth.auth import Auth
+        auth = Auth()
+
+    elif auth_type == "basic_auth":
+        from api.v1.auth.basic_auth import BasicAuth
+        auth = BasicAuth()
+
+    elif auth_type == "session_auth":
+        from api.v1.auth.session_auth import SessionAuth
+        auth = SessionAuth()
 
 
 @app.before_request
@@ -38,7 +46,7 @@ def authenticate():
 
     if not auth.current_user(request):
         abort(403)
-    
+
     request.current_user = auth.current_user(request)
 
 
