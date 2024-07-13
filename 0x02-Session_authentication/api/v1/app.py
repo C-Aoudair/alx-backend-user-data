@@ -46,10 +46,11 @@ def authenticate():
             and not auth.session_cookie(request)):
         abort(401)
 
-    if not auth.current_user(request):
+    current_user = auth.current_user(request)
+    if not current_user:
         abort(403)
 
-    request.current_user = auth.current_user(request)
+    request.current_user = current_user
 
 
 @app.errorhandler(404)

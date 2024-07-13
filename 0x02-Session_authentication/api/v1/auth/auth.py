@@ -32,13 +32,6 @@ class Auth:
 
         return request.headers.get("Authorization")
 
-    def current_user(self, request=None) -> TypeVar('User'):
-        """
-        Returns the current user.
-        For now, this method returns None.
-        """
-        return None
-
     def session_cookie(self, request=None):
         """ Returns a cookie value from a request
             Args:
@@ -50,3 +43,10 @@ class Auth:
             return None
 
         return request.cookies.get(getenv("SESSION_NAME"))
+
+    def current_user(self, request=None) -> TypeVar('User'):
+        """
+        Returns the current user.
+        This method must be overridden in a child class.
+        """
+        return None

@@ -20,7 +20,7 @@ def loging():
 
     try:
         user = User.search({'email': email})[0]
-    except:
+    except KeyError:
         return jsonify({"error": "no user found for this email"}), 404
 
     if not user.is_valid_password(password):
@@ -33,3 +33,12 @@ def loging():
     response.set_cookie(getenv("SESSION_NAME"), session_id)
 
     return response
+
+@app_views.route('/auth_session/logout', methods=['DELETE'], strict_slashes=False)
+def logout():
+    """ route for logout"""
+    from api.v1.app import auth
+
+    if auth.destroy_session(request):
+        return jsonify({}), 200
+    abort(404)
