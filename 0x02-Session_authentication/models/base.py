@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """ Base module
 """
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import TypeVar, List, Iterable
 from os import path
 import json
@@ -28,12 +28,12 @@ class Base():
             self.created_at = datetime.strptime(kwargs.get('created_at'),
                                                 TIMESTAMP_FORMAT)
         else:
-            self.created_at = datetime.utcnow()
+            self.created_at = datetime.now(timezone.utc)
         if kwargs.get('updated_at') is not None:
             self.updated_at = datetime.strptime(kwargs.get('updated_at'),
                                                 TIMESTAMP_FORMAT)
         else:
-            self.updated_at = datetime.utcnow()
+            self.updated_at = datetime.now()
 
     def __eq__(self, other: TypeVar('Base')) -> bool:
         """ Equality
@@ -89,7 +89,7 @@ class Base():
         """ Save current object
         """
         s_class = self.__class__.__name__
-        self.updated_at = datetime.utcnow()
+        self.updated_at = datetime.now()
         DATA[s_class][self.id] = self
         self.__class__.save_to_file()
 
