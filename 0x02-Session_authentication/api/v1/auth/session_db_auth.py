@@ -21,7 +21,6 @@ class SessionDBAuth(SessionExpAuth):
             return None
 
         user_session = UserSession(user_id=user_id, session_id=session_id)
-        print(user_session.created_at)
         user_session.save()
 
         return session_id
@@ -47,7 +46,8 @@ class SessionDBAuth(SessionExpAuth):
         if user_session.created_at is None:
             return None
 
-        if (datetime.now(timezone.utc) - user_session.created_at).seconds > self.session_duration:
+        duration = datetime.now(timezone.utc) - user_session.created_at
+        if duration.seconds > self.session_duration:
             return None
 
         return user_session.user_id
