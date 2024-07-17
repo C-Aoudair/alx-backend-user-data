@@ -45,5 +45,49 @@ class TestDB(unittest.TestCase):
         with self.assertRaises(NoResultFound):
             self.db.find_user_by(email="test@he")
 
+
+class TestDB(unittest.TestCase):
+
+    def setUp(self):
+        """Set up the test database and the DB instance."""
+        self.db = DB()
+
+    def tearDown(self):
+        """Tear down the test database."""
+        Base.metadata.drop_all(self.db._engine)
+
+    def test_update_user_email(self):
+        """Test updating a user's email."""
+        user = self.db.add_user(email="test@test.com", hashed_password="SuperHashedPwd")
+        self.db.update_user(user_id=user.id, email="newemail@test.com")
+        updated_user = self.db.find_user_by(id=user.id)
+        self.assertEqual(updated_user.email, "newemail@test.com")
+
+    def test_update_user_password(self):
+        """Test updating a user's hashed password."""
+        user = self.db.add_user(email="test@test.com", hashed_password="SuperHashedPwd")
+        self.db.update_user(user_id=user.id, hashed_password="NewSuperHashedPwd")
+        updated_user = self.db.find_user_by(id=user.id)
+        self.assertEqual(updated_user.hashed_password, "NewSuperHashedPwd")
+
+    def test_update_user_nonexistent_user(self):
+        """Test updating a nonexistent user."""
+        with self.assertRaises(NoResultFound):
+            self.db.update_user(user_id=999, email="nonexistent@test.com")
+
+    def test_update_user_multiple_attributes(self):
+        """Test updating multiple attributes of a user."""
+        user = self.db.add_user(email="test@test.com", hashed_password="SuperHashedPwd")
+        self.db.update_user(user_id=user.id, email="newemail@test.com", hashed_password="NewSuperHashedPwd")
+        updated_user = self.db.find_user_by(id=user.id)
+        self.assertEqual(updated_user.email, "newemail@test.com")
+        self.assertEqual(updated_user.hashed_password, "NewSuperHashedPwd")
+    
+    def test_update_user_nonexistent_attribute(self):
+        """Test updating a user with a nonexistent attribute."""
+        user = self.db.add_user(email="test@test.com", hashed_password="SuperHashedPwd")
+        with self.assertRaises(AttributeError):
+            self.db.update_user(user_id=user.id, nonexistent_attribute="value")
+
 if __name__ == "__main__":
     unittest.main()
