@@ -10,11 +10,7 @@ from sqlalchemy.exc import NoResultFound
 
 def _hash_password(password: str) -> bytes:
     """hashs the password and return the bytes form"""
-    if not isinstance(password, str):
-        raise ValueError("password should be a string")
-    bytes = password.encode('utf-8')
-
-    return bcrypt.hashpw(bytes, bcrypt.gensalt())
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt())
 
 
 class Auth:
