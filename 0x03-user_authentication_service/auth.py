@@ -15,6 +15,8 @@ def _hash_password(password: str) -> bytes:
     Returns:
         bytes: the hashed password
     """
+    if not password:
+        return None
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt())
 
 
