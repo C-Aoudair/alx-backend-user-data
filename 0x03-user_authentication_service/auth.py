@@ -9,7 +9,12 @@ from sqlalchemy.exc import NoResultFound
 
 
 def _hash_password(password: str) -> bytes:
-    """hashs the password and return the bytes form"""
+    """hashs the password and return the bytes form.
+    Args:
+        password (str): the password to hash
+    Returns:
+        bytes: the hashed password
+    """
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt())
 
 
