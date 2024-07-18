@@ -81,7 +81,10 @@ def reset_password_token(email: str) -> str:
     data = {"email": email}
     response = requests.post(url, data=data)
     assert response.status_code == 200
-    assert response.json() == {"email": email, "reset_token": response.json()["reset_token"]}
+    assert response.json() == {
+        "email": email,
+        "reset_token": response.json()["reset_token"],
+    }
     return response.json()["reset_token"]
 
 
@@ -90,7 +93,11 @@ def update_password(email: str, reset_token: str, new_password: str) -> None:
     update_password function
     """
     url = "http://localhost:5000/reset_password"
-    data = {"email": email, "reset_token": reset_token, "new_password": new_password}
+    data = {
+        "email": email,
+        "reset_token": reset_token,
+        "new_password": new_password
+    }
     response = requests.put(url, data=data)
     assert response.status_code == 200
     assert response.json() == {"email": email, "message": "Password updated"}
