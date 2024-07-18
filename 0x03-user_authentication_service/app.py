@@ -2,7 +2,7 @@
 """Flask app"""
 
 from auth import Auth
-from flask import Flask, jsonify, request, abort, redirect, Response
+from flask import Flask, jsonify, request, abort, redirect, make_response
 
 app = Flask(__name__)
 AUTH = Auth()
@@ -49,7 +49,7 @@ def logout():
     if user:
         AUTH.destroy_session(user.id)
         return redirect("/")
-    return "hello world"
+    return make_response("", 403)
 
 
 if __name__ == "__main__":
