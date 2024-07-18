@@ -2,6 +2,7 @@
 """ Auth module"""
 
 import bcrypt
+import uuid
 
 from db import DB
 from user import User
@@ -16,6 +17,14 @@ def _hash_password(password: str) -> bytes:
         bytes: the hashed password
     """
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+
+
+def _generate_uuid() -> str:
+    """generate a random UUID
+    Returns:
+        str: a random UUID
+    """
+    return str(uuid.uuid4())
 
 
 class Auth:
@@ -41,3 +50,13 @@ class Auth:
             return bcrypt.checkpw(password.encode(), user.hashed_password)
         except NoResultFound:
             return False
+
+    def create_session(self, email: str) -> str:
+        """create_session returns a session ID"""
+        try:
+            user = self._db.find_user_by(email=email)
+            session_id = _generate_uuid()
+            self._db.update_user(user.id, session_id=session_id)
+            return session_id
+        except (NoResultFound, ValueError):
+            return None
